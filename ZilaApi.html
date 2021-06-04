@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="data"></div>
+
+    <script>
+
+        const url = "https://api.myzila.com/LiveDashboard"
+        const dataDiv = document.querySelector('.data')
+
+        let loading = true
+
+        async function fetchData(url) {
+            if (loading) {
+                dataDiv.innerHTML = 'Loading...'
+            }
+
+            try {
+                const res = await fetch(url)
+                if(!res.ok) alert("something is wrong with server!")
+                const obj = await res.json()
+                loading = false
+                if (!loading) {
+                    dataDiv.innerHTML = `
+                        <table border='1'>
+                            <tr>
+                                <td>Sales: </td> 
+                                <td>${obj.data.sales} </td>
+                            </tr>
+                            <tr>
+                                <td>Users Last 24hr: </td> 
+                                <td>${obj.data.user_last_24_hour} </td>
+                            </tr>
+                            <tr>
+                                <td>Users: </td> 
+                                <td>${obj.data.users} </td>
+                            </tr>
+                        </table>
+                        <br />
+                        <div>Message: ${obj.message} </div>
+                        <div>Mehtod: ${obj.method} </div>
+                        <div>Status: ${obj.status} </div>
+                        <div>Success: ${obj.success} </div>
+                        `
+                    }
+            } catch (err) {
+                dataDiv.innterHTML = err.message
+            }
+        }
+
+        document.addEventListener('DomContentLoaded', fetchData(url));
+    </script>
+</body>
+
+</html>
